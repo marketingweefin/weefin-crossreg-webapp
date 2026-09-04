@@ -798,20 +798,6 @@
     </div>
 
     <div class="filter-section">
-      <div class="filter-label">Coverage</div>
-      <div class="chip-group" id="coverChips">
-        <div class="chip" onclick="toggleFilter('covers','Disclosure &amp; Reporting',this)">Disclosure &amp; Reporting</div>
-        <div class="chip" onclick="toggleFilter('covers','Governance requirements',this)">Governance</div>
-        <div class="chip" onclick="toggleFilter('covers','Product classification &amp; Labelling',this)">Product &amp; Labelling</div>
-        <div class="chip" onclick="toggleFilter('covers','Anti-greenwashing rules',this)">Anti-greenwashing</div>
-        <div class="chip" onclick="toggleFilter('covers','Stewardship &amp; engagement requirements',this)">Stewardship</div>
-        <div class="chip" onclick="toggleFilter('covers','Due diligence processes',this)">Due diligence</div>
-        <div class="chip" onclick="toggleFilter('covers','Client preferences',this)">Client preferences</div>
-        <div class="chip" onclick="toggleFilter('covers','Naming rules',this)">Naming rules</div>
-      </div>
-    </div>
-
-    <div class="filter-section">
       <div class="filter-label">Thematics</div>
       <div class="chip-group" id="thematicsChips">
         <div class="chip" onclick="toggleFilter('thematics','Anti-Greenwashing',this)">Anti-Greenwashing</div>
@@ -977,7 +963,6 @@ let state = {
   types: new Set(),
   scopes: new Set(),
   mands: new Set(),
-  covers: new Set(),
   supervisors: new Set(),
   reporting: new Set(),
   thematics: new Set(),
@@ -999,7 +984,7 @@ function toggleStatus(s, el) { toggleFilter('statuses', s, el); }
 function toggleTopic(t, el) { toggleFilter('topics', t, el); }
 
 function clearAllFilters() {
-  ['geos','actors','types','scopes','mands','covers','supervisors','reporting','thematics'].forEach(k => state[k].clear());
+  ['geos','actors','types','scopes','mands','supervisors','reporting','thematics'].forEach(k => state[k].clear());
   state.search = '';
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
@@ -1027,10 +1012,6 @@ function getFiltered() {
       if (!rScopes.some(s => state.scopes.has(s))) return false;
     }
     if (state.mands.size && !state.mands.has(r.mandatory)) return false;
-    if (state.covers.size) {
-      const rCovers = r.covers.split(',').map(c => c.trim());
-      if (![...state.covers].every(c => rCovers.includes(c))) return false;
-    }
     if (state.supervisors.size) {
       if (!r.supervisorGroups || !r.supervisorGroups.some(s => state.supervisors.has(s))) return false;
     }
@@ -1048,12 +1029,11 @@ function getFiltered() {
     types:     r => [r.type],
     scopes:    r => r.scope.split(',').map(s => s.trim()),
     mands:     r => [r.mandatory],
-    covers:    r => r.covers.split(',').map(c => c.trim()),
     supervisors: r => r.supervisorGroups || [],
     reporting:  r => [r.reporting === 'Yes' ? 'Reporting required' : 'No reporting'],
     thematics:  r => r.thematics || []
   };
-  const activeGroupKey = ['geos','actors','types','scopes','mands','covers','supervisors','reporting','thematics']
+  const activeGroupKey = ['geos','actors','types','scopes','mands','supervisors','reporting','thematics']
     .find(k => state[k].size > 1);
   if (activeGroupKey) {
     const order = [...state[activeGroupKey]];
@@ -1123,7 +1103,7 @@ function render() {
 function renderActiveFilters() {
   const bar = document.getElementById('activeFiltersBar');
   const all = [...state.geos, ...state.actors, ...state.types, ...state.scopes,
-               ...state.mands, ...state.covers, ...state.supervisors, ...state.reporting, ...state.thematics];
+               ...state.mands, ...state.supervisors, ...state.reporting, ...state.thematics];
   if (all.length === 0 && !state.search) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
   bar.innerHTML = `<span class="active-filters-label">Active:</span>`;
@@ -1151,7 +1131,7 @@ function renderActiveFilters() {
 }
 
 function removeFilter(f) {
-  ['geos','actors','types','scopes','mands','covers','supervisors','reporting','thematics'].forEach(k => state[k].delete(f));
+  ['geos','actors','types','scopes','mands','supervisors','reporting','thematics'].forEach(k => state[k].delete(f));
   document.querySelectorAll('.chip.active').forEach(el => {
     if (el.textContent.trim() === f || el.innerHTML.replace(/&amp;/g,'&').trim() === f) el.classList.remove('active');
   });
@@ -1183,7 +1163,6 @@ function renderCards(filtered) {
     types: { paths: `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>`, label: `Instrument type` },
     scopes: { paths: `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`, label: `Scope` },
     mands: { paths: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`, label: `Mandatory / Voluntary` },
-    covers: { paths: `<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>`, label: `Coverage` },
     supervisors: { paths: `<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>`, label: `Supervising authority` },
     reporting:  { paths: `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`, label: `Reporting` },
     thematics:  { paths: `<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>`, label: `Thematic` },
@@ -1195,14 +1174,13 @@ function renderCards(filtered) {
     types:     r => [r.type],
     scopes:    r => r.scope.split(',').map(s => s.trim()),
     mands:     r => [r.mandatory],
-    covers:    r => r.covers.split(',').map(c => c.trim()),
     supervisors: r => r.supervisorGroups || [],
     reporting:  r => [r.reporting === 'Yes' ? 'Reporting required' : 'No reporting'],
     thematics:  r => r.thematics || []
   };
 
   // Find which filter to group by (first with >1 selected values)
-  const groupKey = ['geos','actors','types','scopes','mands','covers','supervisors','reporting','thematics']
+  const groupKey = ['geos','actors','types','scopes','mands','supervisors','reporting','thematics']
     .find(k => state[k] && state[k].size > 1);
 
   // Build card HTML helper
@@ -1952,7 +1930,6 @@ function getActiveFilterSummary() {
   if (state.types.size) parts.push('Type: ' + Array.from(state.types).join(', '));
   if (state.scopes.size) parts.push('Scope: ' + Array.from(state.scopes).join(', '));
   if (state.mands.size) parts.push(Array.from(state.mands).join(', '));
-  if (state.covers.size) parts.push('Coverage: ' + Array.from(state.covers).join(', '));
   if (state.supervisors.size) parts.push('Supervisors: ' + Array.from(state.supervisors).join(', '));
   if (state.reporting.size) parts.push('Reporting: ' + Array.from(state.reporting).join(', '));
   return parts.length ? parts.join(' | ') : 'All frameworks';
