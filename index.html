@@ -1186,8 +1186,6 @@ function renderCards(filtered) {
   // Build card HTML helper
   function cardHTML(r) {
     const coverTags = r.covers.split(',').map(c => `<span class="cover-tag">${c.trim()}</span>`).join('');
-    const topicTags = r.topics.slice(0,4).map(t => `<span class="topic-tag">${t}</span>`).join('');
-    const moreTags = r.topics.length > 4 ? `<span class="topic-tag">+${r.topics.length - 4}</span>` : '';
     return `<div class="reg-card" data-status="${r.status}" onclick="openModal(${DATA.indexOf(r)})">
       <div class="card-top">
         <div class="card-title">${r.name}</div>
@@ -1201,7 +1199,6 @@ function renderCards(filtered) {
       </div>
       <div class="card-covers">${coverTags}</div>
       ${r.preview ? `<div class="card-preview">${r.preview}</div>` : ''}
-      ${r.topics.length ? `<div class="card-topics">${topicTags}${moreTags}</div>` : ''}
     </div>`;
   }
 
@@ -1347,11 +1344,6 @@ function openModal(idx) {
       <div class="detail-section-title">Thematics</div>
       <div class="detail-topics">${r.thematics.map(t => `<span class="detail-topic" style="background:var(--aero-pale);color:var(--aero);border-color:rgba(50,186,217,0.2);">${t}</span>`).join('')}</div>
     </div>` : ''}
-
-    <div class="detail-section">
-      <div class="detail-section-title">Cross-regulation topics</div>
-      ${r.topics.length ? `<div class="detail-topics">${r.topics.map(t => `<span class="detail-topic">${t}</span>`).join('')}</div>` : '<p class="no-topics">No cross-regulation topics mapped for this framework.</p>'}
-    </div>
 
 
     ${r.hubUrl ? `
