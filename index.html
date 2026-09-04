@@ -1313,11 +1313,6 @@ function openModal(idx) {
     ${r.phasing ? `<div class="phasing-box">⏱ <strong>Phasing:</strong> ${r.phasing}</div>` : ''}
 
     <div class="detail-section">
-      <div class="detail-section-title">What it covers</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;">${r.covers.split(',').map(c => `<span class="cover-tag" style="background:var(--paper-warm);border-radius:4px;padding:3px 10px;font-size:12px;">${c.trim()}</span>`).join('')}</div>
-    </div>
-
-    <div class="detail-section">
       <div class="detail-section-title">Main requirements</div>
       <div class="detail-req">${r.requirements}</div>
     </div>
