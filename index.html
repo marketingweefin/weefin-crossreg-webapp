@@ -1310,7 +1310,7 @@ function openModal(idx) {
       </div>
     </div>
 
-    ${r.phasing ? `<div class="phasing-box">⏱ <strong>Phasing:</strong> ${r.phasing}</div>` : ''}
+    ${r.phasing && r.phasing.trim() !== '-' ? `<div class="phasing-box">⏱ <strong>Phasing:</strong> ${r.phasing}</div>` : ''}
 
     <div class="detail-section">
       <div class="detail-section-title">Main requirements</div>
